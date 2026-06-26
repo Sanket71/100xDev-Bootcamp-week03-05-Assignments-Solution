@@ -14,7 +14,26 @@
 // - On each new value, compute and emit the current average.
 // - Before N values are received, compute the average
 //   using only the available values.
-function createWindowAggregator(windowSize, onWindowReady) {}
+function createWindowAggregator(windowSize, onWindowReady) {
+    let sum=0;
+    let numberReceived=0;
+    let number=[];
+    let avg;    
+    return function(value){
+        number.push(value);
+        sum+=value;
+        numberReceived+=1;
+        if(numberReceived>windowSize){
+            let firstNumber=number.shift();
+            sum-=firstNumber;
+            avg=sum/windowSize;
+            onWindowReady(avg);
+        }else{
+            avg=sum/numberReceived;
+            onWindowReady(avg);
+        }
+    }
+}
 
 module.exports = createWindowAggregator;
 
